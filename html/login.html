@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../css/loginstyle.css" />
+    <link rel="stylesheet" href="../css/media.css">
+    <script src="../js boostrap/jquery-3.6.0.js"></script>
+    <script src="../js boostrap/bootstrap.bundle.js"></script>
+  </head>
+  <body>
+    <div class="main container">
+      <h1>會員登入</h1>
+      <div class="loginBtn">
+        <button id="login">登入</button>
+        <button id="register">註冊</button>
+        <div style="background-color: rgb(187, 186, 186); height: 2px;  width: 406px; margin-left: 47px;">
+        <div id="x" style="background-color: rgb(190, 82, 82);height: 2px; width: 203px ; transform: translateX(0px); transition: 0.3s;"></div></div>
+      </div>
+
+      <!-- 登入區 -->
+      <div class="row">
+       <div class="col-2"></div>
+       <div class="uidName col-8" style="text-align: left">
+        <form action="" name="form">
+          <div class="">
+            <label for="uid">帳號</label><br />
+            <input
+            class="uidPass"
+              type="text"
+              name="uid"
+              id="uid"
+              placeholder="請輸入手機號碼或信箱"
+              required
+            />
+          </div>
+          <div class="">
+            <label for="passWord">密碼</label><br />
+            <input type="password" name="" id="passWord"class="uidPass" />
+          </div>
+          <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4 ms-lg-5"><input type="submit" class="btn btn-danger mt-5" value="登入" id="submit1"></input></div>
+            <div class="col-4"></div>
+          </div>
+        </form>
+       </div>
+       <div class="col-2"></div>
+      
+      </div>
+
+
+      <!-- 註冊區 -->
+      <div class="row">
+        <div class="col-2"></div>
+        <div class="uidName1 col-8"  style="text-align: left">
+         <form action="" name="form1" >
+          <div class="">
+            <label for="uid"><span >*</span> 姓名</label><br />
+            <input
+            class="uidPass1"
+              type="text"
+              name=""
+              id="uid1"
+              placeholder="請輸入您的姓名"
+              required
+            />
+          </div>
+          <div class="">
+            <label for="passWord"><span>*</span>手機號碼</label><br />
+            <input type="password" name="" id="email"class="uidPass1" placeholder="請輸入手機號碼或信箱" required/>
+          </div>
+          <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4 ms-lg-5"><input type="submit" class="btn btn-danger mt-5" value="註冊" id="btnRegister"></input></div>
+            <div class="col-4"></div>
+          </div>
+          <br>
+         </form>
+       </div>
+       <div class="col-2"></div>
+       <br>
+        <div class="box">
+          <span class="line"></span>
+          <span class="txt">快速登入</span>
+          <span class="line"></span>
+        </div>
+        
+        <div class="row">
+          <div class="col-2"></div>
+          <div class="col-4"><button class="btn">google登入</button></div>
+          <div class="col-4"><button class="btn">facebook登入</button></div>
+          <div class="col-2"></div>
+        </div>
+      </div>
+    <script>
+      $(function () {
+        // 登入區
+        $("#login").on("click", function () {
+          $("#login").css({
+            color: "rgb(207, 57, 57)",
+          });
+          $("#register").css({
+            color: "rgb(0,0,0)",
+          });
+          $('#x').css('transform','translateX(0px)')
+          $(".uidName").css('display','block')
+          $(".uidName1").css('display','none')
+          $('h1').text('會員登入')
+        });
+        // 註冊區
+        $("#register").on("click", function () {
+          $("#login").css({
+            color: "rgb(0,0,0)",
+          });
+          $("#register").css({
+            color: "rgb(207, 57, 57)",
+          });
+          $('#x').css('transform','translateX(203px)')
+          
+          $(".uidName").css('display','none')
+          $(".uidName1").css('display','block')
+          
+
+          $('h1').text('會員註冊')
+        });
+        // var form = document.forms['form1']
+        // // submit.onclick =function  (){
+        // // alert (uid.value)}
+        // // 從表單裡抓input資料
+        // var dataUid = form1.uid.value
+
+
+        var err = false
+        // 拿來判斷有沒有輸入正確 正確的話會被改成ture 
+        function func(data){
+          var JSONdata = JSON.parse(data);
+            for (var temp in JSONdata) {
+            if (JSONdata[temp].uid == $("#uid")[0].value) {
+              location.href = "http://localhost/forRESTfulAPI.php";
+              console.log(JSONdata[temp].id)
+              err = true;
+              break
+            }}
+            if(!err){
+              alert('帳號錯誤')
+            }
+          }
+          // 宣告一個function 拿來找資料庫的資料去判斷使用者輸入的值是否相等
+          submit1.onclick= function(){
+            $.get("http://localhost/forRESTfulAPI.php", func)
+            
+            return false
+       
+        }
+      });
+    </script>
+  </body> 
+</html>
