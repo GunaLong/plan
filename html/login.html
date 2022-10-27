@@ -63,7 +63,7 @@
             <input
             class="uidPass1"
               type="text"
-              name=""
+              
               id="uid1"
               placeholder="請輸入您的姓名"
               required
@@ -71,7 +71,7 @@
           </div>
           <div class="">
             <label for="passWord"><span>*</span>手機號碼</label><br />
-            <input type="password" name="" id="email"class="uidPass1" placeholder="請輸入手機號碼或信箱" required/>
+            <input type="password"  id="email"class="uidPass1" placeholder="請輸入手機號碼或信箱" required/>
           </div>
           <div class="row">
             <div class="col-4"></div>
@@ -133,29 +133,57 @@
         // // 從表單裡抓input資料
         // var dataUid = form1.uid.value
 
-
-        var err = false
-        // 拿來判斷有沒有輸入正確 正確的話會被改成ture 
-        function func(data){
-          var JSONdata = JSON.parse(data);
-            for (var temp in JSONdata) {
-            if (JSONdata[temp].uid == $("#uid")[0].value) {
-              location.href = "http://localhost/forRESTfulAPI.php";
-              console.log(JSONdata[temp].id)
-              err = true;
-              break
-            }}
-            if(!err){
-              alert('帳號錯誤')
-            }
+      submit1.onclick = ()=>{
+      $.ajax({
+        method:'get',
+        url: "http://localhost:8000/",
+        success:(data)=>{
+          let flag = false
+          data.forEach((val,i)=>{
+            console.log(val)
+          if(val.uid == $('#uid').val() && val.password == $("#passWord").val()){
+            alert('登入成功')
+            window.location.href='https://www.google.com.tw/'
+            flag =true
           }
-          // 宣告一個function 拿來找資料庫的資料去判斷使用者輸入的值是否相等
-          submit1.onclick= function(){
-            $.get("http://localhost/forRESTfulAPI.php", func)
-            
-            return false
-       
+        })
+        if(!flag){
+          alert('登入失敗')}
+        },
+        error:() =>{
+          alert('失敗')
         }
+        
+      })
+      return false
+    }
+
+
+
+      btnRegister.onclick = function () {
+      let data = {
+        uid: `${$("#uid1").val()}`,
+        password: `${$("#email").val()}`,
+      };
+      $.ajax({
+        method: "post",
+        url: "http://localhost:8000/",
+        data: data,
+        success: function (data) {
+          console.log(data.data[0].job);
+          data.data.forEach((element, i) => {
+            console.log(element);
+          });
+          alert('註冊成功')
+        },
+          
+        error: function () {
+          //資料傳送失敗後就會執行這個function內的程式，可以在這裡寫入要執行的程式
+          alert("失敗");
+        },
+      });
+      
+    };
       });
     </script>
   </body> 
