@@ -137,50 +137,56 @@
       $.ajax({
         method:'get',
         url: "http://localhost:8000/",
+        // success傳輸成功後 回調函式 data是回傳的陣列
         success:(data)=>{
           let flag = false
+          // 登入判斷
           data.forEach((val,i)=>{
-            console.log(val)
           if(val.uid == $('#uid').val() && val.password == $("#passWord").val()){
             alert('登入成功')
             window.location.href='https://www.google.com.tw/'
             flag =true
           }
+          // 抓資料庫所有資料判斷
         })
         if(!flag){
           alert('登入失敗')}
+          // 資料庫抓不到使用者輸入資料則報錯
         },
+
         error:() =>{
           alert('失敗')
         }
+        // 傳輸不成功顯示失敗
         
       })
-      return false
+      
     }
-
-
 
       btnRegister.onclick = function () {
       let data = {
         uid: `${$("#uid1").val()}`,
         password: `${$("#email").val()}`,
       };
+      // 抓使用者輸入資料 存到物件
       $.ajax({
         method: "post",
         url: "http://localhost:8000/",
         data: data,
+        // 要傳送的資料 
         success: function (data) {
-          console.log(data.data[0].job);
-          data.data.forEach((element, i) => {
-            console.log(element);
-          });
+          // console.log(data.data[0].job);
+          // data.data.forEach((element, i) => {
+          //   console.log(element);
+          // });
           alert('註冊成功')
         },
+        // 傳輸成功跳出註冊成功
           
         error: function () {
-          //資料傳送失敗後就會執行這個function內的程式，可以在這裡寫入要執行的程式
           alert("失敗");
         },
+        //資料傳送失敗後就會執行這個function內的程式，可以在這裡寫入要執行的程式
       });
       
     };
