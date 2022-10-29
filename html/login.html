@@ -59,19 +59,23 @@
         <div class="uidName1 col-8"  style="text-align: left">
          <form action="" name="form1" >
           <div class="">
-            <label for="uid"><span >*</span> 姓名</label><br />
+            <label for="uid"><span >*</span> 帳號</label><br />
             <input
             class="uidPass1"
-              type="text"
-              
+              type="email"
               id="uid1"
-              placeholder="請輸入您的姓名"
+              placeholder="請輸入您的信箱"
               required
             />
           </div>
           <div class="">
-            <label for="passWord"><span>*</span>手機號碼</label><br />
-            <input type="password"  id="email"class="uidPass1" placeholder="請輸入手機號碼或信箱" required/>
+            <label for="passWord"><span>*</span>密碼</label><br />
+            <input type="password"  id="email"class="uidPass1" placeholder="請輸入您的密碼" required/>
+          </div> 
+          <div class="row">
+            <div class="col-6"><label for=""><span>*</span>驗證碼:</label><input type="text" id="verify" class="uidPass1" required pattern="{6}"></div>
+            <div class="col-6"><br> <input type="button" class="btn w-50" name="" id="send" value="寄送驗證碼" "></div>
+            
           </div>
           <div class="row">
             <div class="col-4"></div>
@@ -133,6 +137,7 @@
         // // 從表單裡抓input資料
         // var dataUid = form1.uid.value
 
+        // 登入區
       submit1.onclick = ()=>{
       $.ajax({
         method:'get',
@@ -162,13 +167,55 @@
       })
       
     }
+    let code =''
+    // 寄送驗證碼區
+    send.onclick = () => {
+      $('#send').val('重新發送驗證碼')
+      let num = ['1','2','3','4','5','6','7','8','9','0','A','B','C','D','E','F','G','H','J','K','L','Q','W','R','T','Y','U','I','O','P','Z','X','V','N','M']
+      
+      for(let i = 0 ; i<6;i++){
+        let random = Math.floor(Math.random()*32)
+         code += num[random]
+      }
+      var data = {
+        service_id: "service_emqvzdq",
+        template_id: "template_kjmfnj3",
+        user_id: "v--zvmBBJMdx7fndE",
+        template_params: {
+          to_name: $("#uid1").val(),
+          from_name: "遊戲平台",
+          email: $("#uid1").val(),
+          num:code
+        },
+      };
 
+      $.ajax("https://api.emailjs.com/api/v1.0/email/send", {
+        type: "POST",
+        data: JSON.stringify(data),
+        contentType: "application/json",
+      })
+        .done(function () {
+          alert("驗證碼已寄送");
+        })
+        .fail(function (error) {
+          alert('伺服器忙碌中.. 請稍後再試');
+        });
+      return false;
+    };
+    
+     
+
+
+// 註冊區
       btnRegister.onclick = function () {
+      // 判斷是否通過驗證
+     
+      // 抓使用者輸入資料 存到物件
       let data = {
         uid: `${$("#uid1").val()}`,
         password: `${$("#email").val()}`,
       };
-      // 抓使用者輸入資料 存到物件
+      if($("#uid1").val() != false && $("#email").val() != false && $('#verify').val() == code  &&$('#verify').val() != false){
       $.ajax({
         method: "post",
         url: "http://localhost:8000/",
@@ -180,17 +227,27 @@
           //   console.log(element);
           // });
           alert('註冊成功')
+          
         },
         // 傳輸成功跳出註冊成功
           
         error: function () {
-          alert("失敗");
+          alert("伺服器忙碌中... 請稍後再試1");
         },
         //資料傳送失敗後就會執行這個function內的程式，可以在這裡寫入要執行的程式
-      });
+      })}
+       else{
+        // 沒通過驗證
+        if($('#verify').val()!= code ||$('#verify').val() == false){
+          alert('驗證碼錯誤')}
+          else{
+          alert('帳號密碼填寫錯誤')
+          }
+       }
       
     };
       });
+
     </script>
   </body> 
 </html>
