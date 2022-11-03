@@ -43,7 +43,7 @@
           </div>
           <div class="row">
             <div class="col-4"></div>
-            <div class="col-4 ms-lg-5"><input type="submit" class="btn btn-danger mt-5" value="登入" id="submit1"></input></div>
+            <div class="col-4 ms-lg-5"><input type="button" class="btn btn-danger mt-5" value="登入" id="submit1"></input></div>
             <div class="col-4"></div>
           </div>
         </form>
@@ -57,29 +57,45 @@
       <div class="row">
         <div class="col-2"></div>
         <div class="uidName1 col-8"  style="text-align: left">
-         <form action="" name="form1" >
-          <div class="">
-            <label for="uid"><span >*</span> 帳號</label><br />
-            <input
-            class="uidPass1"
-              type="email"
-              id="uid1"
-              placeholder="請輸入您的信箱"
-              required
-            />
+         <form action="" id="form" >
+           <div class="">
+             <label for="uid"><span >*</span> 帳號</label><br />
+             <input
+             class="uidPass1"
+               type="email"
+               id="uid1"
+               name="email"
+               placeholder="請輸入您的信箱"
+               required
+             />
           </div>
           <div class="">
             <label for="passWord"><span>*</span>密碼</label><br />
-            <input type="password"  id="email"class="uidPass1" placeholder="請輸入您的密碼" required/>
+            <input type="password" name="passWord"  id="email"class="uidPass1" placeholder="請輸入您的密碼" required/>
+          </div> 
+          <div class="">
+            <label for="passWord"><span>*</span>暱稱</label><br />
+            <input type="text" name="userName"  id="userName"class="uidPass1" placeholder="請輸入您的暱稱" required/>
+          </div> 
+          <div class="">
+            <label for="passWord"><span>*</span>地址</label><br />
+            <input type="text" name="address"  id="address"class="uidPass1" placeholder="請輸入您的地址" required/>
+          </div> 
+          <div class="">
+            <label for="passWord"><span>*</span>電話</label><br />
+            <input type="tel" name="tel"  id="tel"class="uidPass1" placeholder="請輸入您的電話" required/>
+          </div> 
+          <div class="">
+            <label for="passWord"><span>*</span>生日</label><br />
+            <input type="date" name="date"  id="date"class="uidPass1"  required/>
           </div> 
           <div class="row">
             <div class="col-6"><label for=""><span>*</span>驗證碼:</label><input type="text" id="verify" class="uidPass1" required pattern="{6}"></div>
             <div class="col-6"><br> <input type="button" class="btn w-50" name="" id="send" value="寄送驗證碼" "></div>
-            
           </div>
           <div class="row">
             <div class="col-4"></div>
-            <div class="col-4 ms-lg-5"><input type="submit" class="btn btn-danger mt-5" value="註冊" id="btnRegister"></input></div>
+            <div class="col-4 ms-lg-5"><input type="button" class="btn btn-danger mt-5" value="註冊" id="btnRegister"></input></div>
             <div class="col-4"></div>
           </div>
           <br>
@@ -141,13 +157,13 @@
       submit1.onclick = ()=>{
       $.ajax({
         method:'get',
-        url: "http://localhost:8000/",
+        url: "http://localhost:8000/test",
         // success傳輸成功後 回調函式 data是回傳的陣列
         success:(data)=>{
           let flag = false
           // 登入判斷
           data.forEach((val,i)=>{
-          if(val.uid == $('#uid').val() && val.password == $("#passWord").val()){
+          if(val.email == $('#uid').val() && val.password == $("#passWord").val()){
             alert('登入成功')
             window.location.href='https://www.google.com.tw/'
             flag =true
@@ -165,8 +181,9 @@
         // 傳輸不成功顯示失敗
         
       })
-      
     }
+
+
     let code =''
     // 寄送驗證碼區
     send.onclick = () => {
@@ -208,46 +225,61 @@
 
 // 註冊區
       btnRegister.onclick = function () {
-      // 判斷是否通過驗證
-     
+       
+      let data = $('#form').serializeArray()
+      console.log(data)
+      let JSONdata = JSON.parse(serializeToJSON(data)) 
       // 抓使用者輸入資料 存到物件
-      let data = {
-        uid: `${$("#uid1").val()}`,
-        password: `${$("#email").val()}`,
-      };
-      if($("#uid1").val() != false && $("#email").val() != false && $('#verify').val() == code  &&$('#verify').val() != false){
-      $.ajax({
-        method: "post",
-        url: "http://localhost:8000/",
-        data: data,
-        // 要傳送的資料 
-        success: function (data) {
-          // console.log(data.data[0].job);
-          // data.data.forEach((element, i) => {
-          //   console.log(element);
-          // });
-          alert('註冊成功')
-          
-        },
+      // serializeToJSON(data) 參考下面函式
+     
+      if($("#form")[0].reportValidity()&&$('#verify').val() == code){
+       
+         $.ajax({
+           method: "post",
+           url: "http://localhost:8000/test",
+           data: JSONdata,
+           // 要傳送的資料 
+           success: function (data) {
+           // console.log(data.data[0].job);
+           // data.data.forEach((element, i) => {
+           //   console.log(element);
+           // });
+           if(data){
+             alert('信箱重複註冊')
+           }
+           else{
+           alert('註冊成功')
+           location.reload()}
+           },
         // 傳輸成功跳出註冊成功
-          
-        error: function () {
-          alert("伺服器忙碌中... 請稍後再試1");
-        },
-        //資料傳送失敗後就會執行這個function內的程式，可以在這裡寫入要執行的程式
-      })}
-       else{
-        // 沒通過驗證
-        if($('#verify').val()!= code ||$('#verify').val() == false){
-          alert('驗證碼錯誤')}
-          else{
-          alert('帳號密碼填寫錯誤')
-          }
-       }
-      
-    };
-      });
+           error: function () {
+           alert("伺服器忙碌中... 請稍後再試1");},
+               //資料傳送失敗後就會執行這個function內的程式，可以在這裡寫入要執行的程式
+             })
+           }
+           else if ($('#verify').val() != code){
+               // 沒通過驗證
+               alert('驗證碼錯誤')
+             }
+           else{
+             alert('資料填寫錯誤') }
+           };
+             });
 
+      // 轉表單資料的函式
+      function serializeToJSON(data) {
+        var values = {};
+        // 宣告一個物件
+        // for (index in data) {
+        //   values[data[index].name] = data[index].value;
+        //   // values[key]=value  物件新增屬性的方法
+        // }
+        data.forEach((val,i)=>{
+          values[val.name] = val.value
+        })
+        return JSON.stringify(values);
+        //     回傳迴圈跑完的值轉成JSON字串
+      }
     </script>
   </body> 
 </html>
